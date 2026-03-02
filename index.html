@@ -152,6 +152,18 @@ title: Home
             <h2 class="section-title">🔥 Today's Best Deals</h2>
 
             {% for post in site.posts limit:15 %}
+            {% if forloop.index == 3 and site.adsense_client %}
+            <!-- In-feed Ad -->
+            <div class="deal-card" style="text-align:center;background:#fff8f5;">
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="{{ site.adsense_client }}"
+                     data-ad-slot="auto"
+                     data-ad-format="fluid"
+                     data-ad-layout-key="-6t+ed+2i-1n-4w"></ins>
+                <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+            </div>
+            {% endif %}
             <div class="deal-card {% if post.hot %}deal-hot{% endif %}">
                 {% if post.discount %}
                 <div class="discount-badge">-{{ post.discount }}% OFF</div>
