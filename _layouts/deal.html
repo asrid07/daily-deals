@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page.title }} | {{ site.title }}</title>
+    <meta name="description" content="{{ page.description | default: site.description }}">
+    <meta name="keywords" content="{{ page.keywords | join: ', ' }}">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="{{ page.title }}">
+    <meta property="og:description" content="{{ page.description }}">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="{{ page.url | absolute_url }}">
+    <meta property="og:site_name" content="{{ site.title }}">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ page.title }}">
+    <meta name="twitter:description" content="{{ page.description }}">
+
+    <link rel="canonical" href="{{ page.url | absolute_url }}">
+
+    <!-- JSON-LD Product Schema -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": "{{ page.product_name | default: page.title }}",
+        "description": "{{ page.description }}",
+        {% if page.deal_price %}
+        "offers": {
+            "@type": "Offer",
+            "price": "{{ page.deal_price | remove: '₹' | remove: '$' | remove: ',' }}",
+            "priceCurrency": "{{ page.currency | default: 'INR' }}",
+            "availability": "https://schema.org/InStock",
+            "url": "{{ page.affiliate_url | default: page.url | absolute_url }}"
+        },
+        {% endif %}
+        "review": {
+            "@type": "Review",
+            "reviewRating": {
+                "@type": "Rating",
+                "ratingValue": "{{ page.rating | default: 4.5 }}",
+                "bestRating": "5"
+            },
+            "author": {
+                "@type": "Organization",
+                "name": "{{ site.title }}"
+            }
+        }
+    }
+    </script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.75; color: #2d3748; background: #f7fafc;
+            max-width: 820px; margin: 0 auto; padding: 16px;
+        }
+
+        /* === HEADER === */
+        .site-header {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            color: #fff; padding: 18px; border-radius: 12px;
+            text-align: center; margin-bottom: 20px;
+        }
+        .site-header h1 a { color: #fff; text-decoration: none; font-size: 1.6rem; }
+        .site-header nav { margin-top: 10px; }
+        .site-header nav a { color: #fff; text-decoration: none; margin: 0 10px; font-weight: 500; opacity: 0.9; }
+        .site-header nav a:hover { opacity: 1; text-decoration: underline; }
+
+        /* === DEAL ARTICLE === */
+        .deal-article {
+            background: #fff; padding: 36px; border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        }
+        .deal-article h1 { font-size: 1.8rem; color: #1a202c; line-height: 1.3; margin-bottom: 12px; }
+        .deal-meta { color: #a0aec0; font-size: 0.85rem; margin-bottom: 8px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+        .category-badge {
+            background: #fff3e0; color: #ff6b35; padding: 3px 12px;
+            border-radius: 10px; font-weight: 600; font-size: 0.8rem;
+        }
+
+        /* === PRICE BOX === */
+        .price-box {
+            background: linear-gradient(135deg, #fff9e6, #fff3e0);
+            border: 2px solid #ff6b35; border-radius: 12px;
+            padding: 24px; margin: 20px 0; text-align: center;
+        }
+        .price-original {
+            color: #aaa; text-decoration: line-through; font-size: 1.2rem;
+        }
+        .price-deal {
+            color: #ff4444; font-size: 2.4rem; font-weight: 900; display: block; margin: 6px 0;
+        }
+        .price-savings { color: #00c853; font-weight: 700; font-size: 1rem; }
+        .discount-badge-large {
+            display: inline-block; background: #00c853; color: #fff;
+            padding: 6px 18px; border-radius: 8px; font-size: 1.1rem;
+            font-weight: 800; margin: 10px 0;
+        }
+        .buy-btn {
+            display: inline-block; background: linear-gradient(135deg, #ff6b35, #ff4444);
+            color: #fff; padding: 16px 48px; border-radius: 10px;
+            text-decoration: none; font-weight: 800; font-size: 1.2rem;
+            margin-top: 14px; transition: all 0.2s;
+            box-shadow: 0 4px 15px rgba(255,68,68,0.3);
+            animation: pulseBtn 2s ease-in-out infinite;
+        }
+        @keyframes pulseBtn {
+            0%,100% { box-shadow: 0 4px 15px rgba(255,68,68,0.3); }
+            50% { box-shadow: 0 6px 25px rgba(255,68,68,0.5); }
+        }
+        .buy-btn:hover { transform: translateY(-2px); }
+        .deal-timer { color: #ff4444; font-weight: 600; margin-top: 10px; font-size: 0.9rem; }
+
+        /* === CONTENT === */
+        .deal-content h2 { color: #ff6b35; margin: 28px 0 14px; font-size: 1.4rem; border-bottom: 2px solid #fff3e0; padding-bottom: 6px; }
+        .deal-content h3 { color: #2d3748; margin: 20px 0 10px; font-size: 1.1rem; }
+        .deal-content p { margin-bottom: 14px; }
+        .deal-content ul, .deal-content ol { margin: 10px 0 16px 24px; }
+        .deal-content li { margin-bottom: 6px; }
+        .deal-content table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+        .deal-content th, .deal-content td { border: 1px solid #e2e8f0; padding: 10px 14px; }
+        .deal-content th { background: #fff3e0; font-weight: 600; color: #ff6b35; }
+        .deal-content a { color: #ff6b35; }
+        .deal-content blockquote {
+            border-left: 4px solid #ff6b35; padding: 12px 20px;
+            margin: 16px 0; background: #fffbf5; border-radius: 0 6px 6px 0;
+        }
+        .deal-content strong { color: #1a202c; }
+        .deal-content code { background: #f7fafc; padding: 2px 6px; border-radius: 4px; font-size: 0.88rem; }
+
+        /* === PROS & CONS === */
+        .pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
+        .pros, .cons { padding: 16px; border-radius: 8px; }
+        .pros { background: #e8f5e9; border: 1px solid #a5d6a7; }
+        .cons { background: #ffebee; border: 1px solid #ef9a9a; }
+        .pros h4 { color: #2e7d32; } .cons h4 { color: #c62828; }
+        .pros li::marker { content: "✅ "; } .cons li::marker { content: "❌ "; }
+
+        /* === RATING === */
+        .rating-box {
+            background: #fff; border: 2px solid #ff6b35;
+            border-radius: 10px; padding: 16px; text-align: center; margin: 20px 0;
+        }
+        .rating-stars { font-size: 1.8rem; margin-bottom: 6px; }
+        .rating-score { font-size: 2rem; font-weight: 900; color: #ff6b35; }
+
+        /* === SHARE === */
+        .share-buttons { display: flex; gap: 8px; flex-wrap: wrap; margin: 20px 0; }
+        .share-btn {
+            padding: 8px 16px; border-radius: 6px; font-size: 0.85rem;
+            text-decoration: none; font-weight: 600; color: #fff;
+        }
+        .share-twitter { background: #1DA1F2; } .share-whatsapp { background: #25D366; }
+        .share-telegram { background: #0088cc; } .share-reddit { background: #FF4500; }
+
+        /* === RELATED === */
+        .related-deals { margin-top: 30px; padding-top: 20px; border-top: 2px solid #e2e8f0; }
+        .related-deals h3 { color: #2d3748; margin-bottom: 12px; }
+        .related-deals ul { list-style: none; padding: 0; }
+        .related-deals li { margin-bottom: 8px; }
+        .related-deals a { color: #ff6b35; text-decoration: none; font-weight: 500; }
+        .related-deals a:hover { text-decoration: underline; }
+
+        .affiliate-disclaimer {
+            font-size: 0.78rem; color: #a0aec0; font-style: italic;
+            margin-top: 30px; padding-top: 16px; border-top: 1px solid #e2e8f0;
+        }
+        footer { text-align: center; padding: 24px 0; color: #a0aec0; font-size: 0.85rem; margin-top: 20px; }
+        footer a { color: #ff6b35; text-decoration: none; }
+
+        /* === AD === */
+        .ad-container {
+            text-align: center; margin: 24px 0; padding: 14px;
+            background: #f7fafc; border: 1px dashed #e2e8f0; border-radius: 6px;
+            min-height: 90px;
+        }
+        .ad-label { font-size: 0.68rem; color: #cbd5e0; text-transform: uppercase; letter-spacing: 1px; }
+
+        @media (max-width: 640px) {
+            .deal-article { padding: 18px; }
+            .deal-article h1 { font-size: 1.3rem; }
+            .price-deal { font-size: 1.8rem; }
+            .pros-cons { grid-template-columns: 1fr; }
+        }
+    </style>
+
+    {% include adsense.html %}
+</head>
+<body>
+    <div class="site-header">
+        <h1><a href="{{ site.baseurl }}/">🔥 {{ site.title }}</a></h1>
+        <nav>
+            <a href="{{ site.baseurl }}/">🏠 All Deals</a>
+            <a href="{{ site.baseurl }}/about">📖 About</a>
+            <a href="{{ site.baseurl }}/feed.xml">📡 RSS</a>
+        </nav>
+    </div>
+
+    <article class="deal-article">
+        <h1>{{ page.title }}</h1>
+        <div class="deal-meta">
+            <span>📅 {{ page.date | date: "%B %d, %Y" }}</span>
+            <span class="category-badge">{{ page.category }}</span>
+            {% if page.hot %}<span style="color:#ff4444;font-weight:700;">🔥 HOT DEAL</span>{% endif %}
+            {% if page.store %}<span>🏪 {{ page.store }}</span>{% endif %}
+        </div>
+
+        <!-- PRICE BOX -->
+        {% if page.deal_price %}
+        <div class="price-box">
+            {% if page.original_price %}
+            <span class="price-original">{{ page.original_price }}</span>
+            {% endif %}
+            <span class="price-deal">{{ page.deal_price }}</span>
+            {% if page.discount %}
+            <div class="discount-badge-large">{{ page.discount }}% OFF</div>
+            {% endif %}
+            {% if page.savings %}
+            <div class="price-savings">💰 You Save: {{ page.savings }}</div>
+            {% endif %}
+            <br>
+            <a href="{{ page.affiliate_url | default: '#' }}" class="buy-btn" target="_blank" rel="nofollow noopener">
+                🛒 Grab This Deal Now!
+            </a>
+            {% if page.expires %}
+            <div class="deal-timer">⏰ Offer expires: {{ page.expires }}</div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- AD SLOT 1 -->
+        <div class="ad-container"><div class="ad-label">Advertisement</div></div>
+
+        <!-- CONTENT -->
+        <div class="deal-content">
+            {{ content }}
+        </div>
+
+        <!-- AD SLOT 2 -->
+        <div class="ad-container"><div class="ad-label">Advertisement</div></div>
+
+        <!-- RATING -->
+        {% if page.rating %}
+        <div class="rating-box">
+            <div class="rating-stars">{% for i in (1..5) %}{% if i <= page.rating %}⭐{% else %}☆{% endif %}{% endfor %}</div>
+            <div class="rating-score">{{ page.rating }}/5</div>
+            <div style="color:#888;font-size:0.85rem;">Our Rating</div>
+        </div>
+        {% endif %}
+
+        <!-- CTA AGAIN -->
+        {% if page.deal_price %}
+        <div style="text-align:center; margin: 20px 0;">
+            <a href="{{ page.affiliate_url | default: '#' }}" class="buy-btn" target="_blank" rel="nofollow noopener">
+                🛒 Don't Miss Out — Get It Now!
+            </a>
+        </div>
+        {% endif %}
+
+        <!-- SHARE -->
+        <h3>📤 Share This Deal</h3>
+        <div class="share-buttons">
+            <a class="share-btn share-twitter" href="https://twitter.com/intent/tweet?url={{ page.url | absolute_url }}&text=🔥{{ page.title | url_encode }}" target="_blank">🐦 Twitter</a>
+            <a class="share-btn share-whatsapp" href="https://api.whatsapp.com/send?text=🔥{{ page.title | url_encode }}%20{{ page.url | absolute_url }}" target="_blank">💬 WhatsApp</a>
+            <a class="share-btn share-telegram" href="https://t.me/share/url?url={{ page.url | absolute_url }}&text={{ page.title | url_encode }}" target="_blank">📨 Telegram</a>
+            <a class="share-btn share-reddit" href="https://reddit.com/submit?url={{ page.url | absolute_url }}&title={{ page.title | url_encode }}" target="_blank">🗨️ Reddit</a>
+        </div>
+
+        <!-- RELATED DEALS -->
+        {% assign related = site.posts | where_exp: "post", "post.url != page.url" | slice: 0, 5 %}
+        {% if related.size > 0 %}
+        <div class="related-deals">
+            <h3>🛍️ More Deals You'll Love</h3>
+            <ul>
+                {% for post in related %}
+                <li>🔥 <a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
+                    {% if post.deal_price %}<strong style="color:#ff4444;">{{ post.deal_price }}</strong>{% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <p class="affiliate-disclaimer">
+            <strong>Affiliate Disclosure:</strong> This page contains affiliate links. If you purchase through these links, we may earn a small commission at no extra cost to you. We only feature deals we believe offer genuine value. Prices and availability are subject to change.
+        </p>
+    </article>
+
+    <footer>
+        <p>&copy; {{ 'now' | date: "%Y" }} {{ site.title }}. Fresh deals every day!</p>
+        <p><a href="{{ site.baseurl }}/">Home</a> | <a href="{{ site.baseurl }}/about">About</a> | <a href="{{ site.baseurl }}/feed.xml">RSS</a></p>
+    </footer>
+
+    {% if site.google_analytics %}
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ site.google_analytics }}"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date()); gtag('config', '{{ site.google_analytics }}');
+    </script>
+    {% endif %}
+</body>
+</html>

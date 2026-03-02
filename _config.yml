@@ -1,0 +1,50 @@
+# DealHunt Daily - Deals & Offers Blog
+title: "DealHunt Daily"
+description: "🔥 Your daily hunt for the best deals, discounts & offers on Electronics, Fashion, Home, Books, Software & more!"
+author: "DealHunt Team"
+url: "https://asrid07.github.io"
+baseurl: "/daily-deals"
+
+# Build Settings
+markdown: kramdown
+highlighter: rouge
+theme: minima
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+# Monetization
+adsense_client: "ca-pub-7888250727336696"
+google_analytics: ""
+
+# Affiliate IDs
+affiliate:
+  amazon_in_tag: ""          # e.g., yourtag-21 (Amazon India Associates)
+  amazon_com_tag: ""         # e.g., yourtag-20 (Amazon US Associates)
+  flipkart_id: ""            # Flipkart Affiliate ID
+  hostinger_ref: ""          # Hostinger referral code
+  udemy_ref: ""              # Udemy affiliate link
+  software_ref: ""           # Generic software affiliate
+
+# Content Settings
+permalink: /:year/:month/:day/:title/
+paginate: 15
+show_excerpts: true
+
+# SEO Defaults
+defaults:
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "deal"
+      author: "DealHunt Team"
+
+# Exclude from build
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock
+  - scripts/
+  - .github/

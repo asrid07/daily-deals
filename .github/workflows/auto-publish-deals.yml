@@ -1,0 +1,83 @@
+name: "Auto Publish Deals"
+
+on:
+  schedule:
+    - cron: "0 5 * * *"   # Daily at 5:00 AM UTC (10:30 AM IST)
+  workflow_dispatch:
+    inputs:
+      deal_count:
+        description: "Number of deals to generate"
+        required: false
+        default: "2"
+        type: choice
+        options: ["1", "2", "3", "4", "5"]
+      category:
+        description: "Category (empty = random)"
+        required: false
+        default: ""
+        type: choice
+        options: ["", "Electronics", "Fashion", "Home", "Books", "Software", "Gaming", "Courses"]
+
+permissions:
+  contents: write
+
+jobs:
+  generate-deals:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "📥 Checkout"
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: "🐍 Setup Python"
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: "🛒 Generate Deal Posts"
+        run: |
+          COUNT="${{ github.event.inputs.deal_count || '2' }}"
+          CATEGORY="${{ github.event.inputs.category || '' }}"
+          CMD="python scripts/generate_deal.py --count $COUNT"
+          [ -n "$CATEGORY" ] && CMD="$CMD --category \"$CATEGORY\""
+          echo "Running: $CMD"
+          eval $CMD
+
+      - name: "📊 Check Changes"
+        id: check
+        run: |
+          UNTRACKED=$(git ls-files --others --exclude-standard _posts/)
+          if [ -n "$UNTRACKED" ]; then
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "✅ New deals: $UNTRACKED"
+          else
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "ℹ️ No new deals"
+          fi
+
+      - name: "🚀 Commit & Push"
+        if: steps.check.outputs.has_changes == 'true'
+        run: |
+          git config user.name "DealHunt Bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add _posts/
+          DATE=$(date +"%Y-%m-%d")
+          COUNT=$(git diff --staged --name-only | wc -l)
+          git commit -m "🛒 Auto-publish: ${COUNT} new deal(s) — ${DATE}"
+          git push origin main
+          echo "✅ Deals published! Live in ~2 minutes."
+
+      - name: "📋 Summary"
+        run: |
+          echo "## 🛒 Deal Publish Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Detail | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Date | $(date +'%Y-%m-%d %H:%M UTC') |" >> $GITHUB_STEP_SUMMARY
+          echo "| New Deals | ${{ steps.check.outputs.has_changes }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Trigger | ${{ github.event_name }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Current Deals" >> $GITHUB_STEP_SUMMARY
+          ls -la _posts/ >> $GITHUB_STEP_SUMMARY 2>/dev/null || echo "No posts" >> $GITHUB_STEP_SUMMARY

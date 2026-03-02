@@ -1,0 +1,21 @@
+<div class="deal-card {% if include.deal.hot %}deal-hot{% endif %}">
+    {% if include.deal.discount %}
+    <div class="discount-badge">-{{ include.deal.discount }}% OFF</div>
+    {% endif %}
+    <h2><a href="{{ include.deal.url }}">{{ include.deal.title }}</a></h2>
+    <div class="deal-meta">
+        <span class="deal-category">{{ include.deal.category }}</span>
+        <span class="deal-date">📅 {{ include.deal.date | date: "%B %d, %Y" }}</span>
+        {% if include.deal.hot %}<span class="deal-fire">🔥 HOT DEAL</span>{% endif %}
+    </div>
+    <div class="deal-pricing">
+        {% if include.deal.original_price %}
+        <span class="original-price">{{ include.deal.original_price }}</span>
+        {% endif %}
+        {% if include.deal.deal_price %}
+        <span class="deal-price">{{ include.deal.deal_price }}</span>
+        {% endif %}
+    </div>
+    <p class="deal-excerpt">{{ include.deal.description | truncate: 180 }}</p>
+    <a href="{{ include.deal.url }}" class="deal-btn">🛒 View Deal →</a>
+</div>
